@@ -1,5 +1,6 @@
-import { Text } from "@chakra-ui/react";
 import Head from "next/head";
+
+import Todos from "@/components/todos";
 
 export default function Home() {
   return (
@@ -7,7 +8,7 @@ export default function Home() {
       <Head>
         <title>My todo list</title>
       </Head>
-      <Text fontSize="lg">Todo list in progress</Text>
+      <Todos />
     </>
   );
 }

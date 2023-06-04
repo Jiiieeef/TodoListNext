@@ -10,7 +10,7 @@ const TodosItems = () => {
   return (
     <List spacing={4}>
       {todosItems.map(todoItem => (
-        <ListItem key={todoItem.added_at}>
+        <ListItem key={todoItem.id}>
           <TodoItem todoItem={todoItem} />
         </ListItem>
       ))}

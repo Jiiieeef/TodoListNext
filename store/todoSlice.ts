@@ -15,10 +15,15 @@ type AddTodoItemState = {
   text: string;
 };
 
+type DoneTodoItemState = {
+  id: number;
+};
+
 type State = TodoItem[];
 
 type Actions = {
   addTodoItem: CaseReducer<State, PayloadAction<AddTodoItemState>>;
+  doneTodoItem: CaseReducer<State, PayloadAction<DoneTodoItemState>>;
 };
 
 export const todoSlice = createSlice<State, Actions>({
@@ -33,10 +38,28 @@ export const todoSlice = createSlice<State, Actions>({
 
       todoItemId++;
     },
+
+    doneTodoItem: (state, action): State => {
+      const idToDone = action.payload.id;
+      const todoItem = state.find(({ id }) => id === idToDone);
+
+      if (todoItem) {
+        const todoItemDone = {
+          ...todoItem,
+          done_at: new Date().getTime(),
+        };
+
+        return state.map(todoItem =>
+          todoItem.id === idToDone ? todoItemDone : todoItem
+        );
+      }
+
+      return state;
+    },
   },
 });
 
-export const { addTodoItem } = todoSlice.actions;
+export const { addTodoItem, doneTodoItem } = todoSlice.actions;
 
 export const selectTodoItems = (state: AppState) => state.todos;
 

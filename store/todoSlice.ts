@@ -1,4 +1,9 @@
-import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import {
+  CaseReducer,
+  PayloadAction,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { AppState } from "./store";
 
 let todoItemId = 1;
@@ -19,11 +24,16 @@ type DoneTodoItemState = {
   id: number;
 };
 
+type DeleteTodoItemState = {
+  id: number;
+};
+
 type State = TodoItem[];
 
 type Actions = {
   addTodoItem: CaseReducer<State, PayloadAction<AddTodoItemState>>;
   doneTodoItem: CaseReducer<State, PayloadAction<DoneTodoItemState>>;
+  deleteTodoItem: CaseReducer<State, PayloadAction<DeleteTodoItemState>>;
 };
 
 export const todoSlice = createSlice<State, Actions>({
@@ -56,10 +66,28 @@ export const todoSlice = createSlice<State, Actions>({
 
       return state;
     },
+
+    deleteTodoItem: (state, action): State => {
+      const idToDelete = action.payload.id;
+      const todoItem = state.find(({ id }) => id === idToDelete);
+
+      if (todoItem) {
+        const todoItemDone = {
+          ...todoItem,
+          deleted_at: new Date().getTime(),
+        };
+
+        return state.map(todoItem =>
+          todoItem.id === idToDelete ? todoItemDone : todoItem
+        );
+      }
+
+      return state;
+    },
   },
 });
 
-export const { addTodoItem, doneTodoItem } = todoSlice.actions;
+export const { addTodoItem, doneTodoItem, deleteTodoItem } = todoSlice.actions;
 
 export const selectTodoItems = (state: AppState) => state.todos;
 
@@ -69,5 +97,10 @@ export const selectSordtedTodoItems = (state: AppState) => {
     todoA.added_at < todoB.added_at ? 1 : -1
   );
 };
+
+export const selectNotDeletedTodoItems = createSelector(
+  selectSordtedTodoItems,
+  state => state.filter(({ deleted_at }) => !deleted_at)
+);
 
 export default todoSlice.reducer;

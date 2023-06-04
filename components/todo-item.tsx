@@ -1,8 +1,8 @@
 import { Box, Flex, Text } from "@chakra-ui/layout";
-import { CheckIcon } from "@chakra-ui/icons";
+import { CheckIcon, DeleteIcon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/button";
 
-import { TodoItem, doneTodoItem } from "@/store/todoSlice";
+import { TodoItem, deleteTodoItem, doneTodoItem } from "@/store/todoSlice";
 import { useAppDispatch } from "@/store/store";
 
 type TodoItemProps = {
@@ -32,6 +32,15 @@ const TodoItem = ({ todoItem }: TodoItemProps) => {
 
       {!todoItem.done_at && (
         <Box className="actions" visibility="hidden">
+          <IconButton
+            aria-label="Remove"
+            icon={<DeleteIcon />}
+            size="xs"
+            colorScheme="red"
+            onClick={() => dispatch(deleteTodoItem({ id: todoItem.id }))}
+            marginRight={3}
+          />
+
           <IconButton
             aria-label="Done"
             icon={<CheckIcon />}
